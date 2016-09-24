@@ -1,0 +1,37 @@
+/* add your CSS here */
+.animal-image {
+  width: 300px;
+  height: 230px;
+  padding: 10px 0;
+}
+
+.fact {
+  font-style: italic;
+}
+
+.detail-items{
+  list-style: none;
+  padding: 0;
+}
+
+.card {
+  width: 300px;
+  border: dashed 5px #FF4136;
+  padding: 15px;
+  box-shadow: 0 0 10px 0 #ccc;
+}
+
+.label {
+  font-weight: bold
+}
+
+.information {
+  border: solid 1px #ccc;
+  padding: 0 10px;
+}
+.description {
+  padding-bottom: 10px;
+}
+body {
+  font-family: Helvetica, Arial
+}
