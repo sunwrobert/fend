@@ -1,0 +1,45 @@
+body {
+    font-family: 'Catamaran', sans-serif;
+}
+
+.header-logo {
+    letter-spacing: 2px;
+    font-weight: 700;
+    font-size: 5em;
+    color: #22a7f0;
+}
+
+.header-name {
+    font-size: 3.5em;
+}
+
+.header-job-title {
+    font-weight: 300;
+}
+
+.cheer-bg {
+    background: url('../img/cheer.jpg');
+    height: 800px;
+    background-size: cover;
+}
+
+.cheer-text {
+    color: snow;
+    font-weight: 300;
+    font-size: 3.3em;
+}
+
+.featured-work {
+    color: #22a7f0;
+}
+
+.work-image {
+    max-width: 350px;
+    height: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.work-image-caption {
+    padding: 15px 0;
+}
