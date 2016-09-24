@@ -29,7 +29,7 @@ body {
     font-size: 3.3em;
 }
 
-.featured-work {
+.featured-work-text {
     color: #22a7f0;
 }
 
@@ -38,6 +38,10 @@ body {
     height: 200px;
     display: block;
     margin: 0 auto;
+}
+
+.work-title {
+    color: #0074d9;
 }
 
 .work-image-caption {
