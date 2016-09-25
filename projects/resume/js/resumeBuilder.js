@@ -13,12 +13,11 @@ var bio = {
         'Java', 'HTML', 'CSS', 'Git', 'Python'
     ],
     biopic: 'images/fry.jpg',
-    display: function () {
+    display: function() {
         var formattedHeaderName = HTMLheaderName.replace("%data%", bio.name);
         var formattedHeaderRole = HTMLheaderRole.replace("%data%", bio.role);
         var formattedWelcomeMsg = HTMLwelcomeMsg.replace("%data%", bio.welcomeMessage);
         var formattedBioPic = HTMLbioPic.replace("%data%", bio.biopic);
-        var formattedHTMLskills = HTMLwelcomeMsg.replace("%data%", bio.welcomeMessage);
 
         $("#header").prepend(formattedHeaderRole);
         $("#header").prepend(formattedHeaderName);
@@ -52,20 +51,23 @@ var work = {
         dates: 'June 2014 - July 2014',
         description: "Created extensive unit tests using PHPUnit and pushed corresponding bug fixes to improve code coverage. Increased security of the app to SQL injection through the use of PDOs and named placeholders. Developed an internal web application in HTML, CSS, and Javascript to add clients to Woblet’s database."
     }],
-    display: function () {
-        for (job in work.jobs) {
-            $("#workExperience").append(HTMLworkStart);
+    display: function() {
+        for (var job in work.jobs) {
+            if (work.jobs.hasOwnProperty(job)) {
+                $("#workExperience").append(HTMLworkStart);
 
-            var formattedEmployer = HTMLworkEmployer.replace("%data%", work.jobs[job].employer);
-            var formattedTitle = HTMLworkTitle.replace("%data%", work.jobs[job].title);
-            var formattedEmployerTitle = formattedEmployer + formattedTitle;
-            $(".work-entry:last").append(formattedEmployerTitle);
+                var formattedEmployer = HTMLworkEmployer.replace("%data%", work.jobs[job].employer);
+                var formattedTitle = HTMLworkTitle.replace("%data%", work.jobs[job].title);
+                var formattedEmployerTitle = formattedEmployer + formattedTitle;
+                $(".work-entry:last").append(formattedEmployerTitle);
 
-            var formattedDates = HTMLworkDates.replace("%data%", work.jobs[job].dates);
-            $(".work-entry:last").append(formattedDates);
+                var formattedDates = HTMLworkDates.replace("%data%", work.jobs[job].dates);
+                $(".work-entry:last").append(formattedDates);
 
-            var formattedDescription = HTMLworkDescription.replace("%data%", work.jobs[job].description);
-            $(".work-entry:last").append(formattedDescription);
+                var formattedDescription = HTMLworkDescription.replace("%data%", work.jobs[job].description);
+                $(".work-entry:last").append(formattedDescription);
+            }
+
         }
     }
 };
@@ -77,8 +79,8 @@ var projects = {
         images: ['http://placehold.it/350x150'],
         description: "Designed and implemented a web application in which a user could register an account, check out books, request extensions on books, check-out books, and other librarial functions. Developed backend through Python (Flask) and frontend through HTML, CSS (Bootstrap), and JavaScript. System was backed with a relational DBMS that supports SQL.",
     }],
-    display: function () {
-        projects.projects.forEach(function (project) {
+    display: function() {
+        projects.projects.forEach(function(project) {
             $("#projects").append(HTMLprojectStart);
             var formattedProjectTitle = HTMLprojectTitle.replace("%data%", project.title);
             var formattedProjectDate = HTMLprojectDates.replace("%data%", project.date);
@@ -86,10 +88,10 @@ var projects = {
             $(".project-entry:last").append(formattedProjectTitle);
             $(".project-entry:last").append(formattedProjectDate);
             $(".project-entry:last").append(formattedProjectDescription);
-            project.images.forEach(function (image) {
+            project.images.forEach(function(image) {
                 var formattedProjectImage = HTMLprojectImage.replace("%data%", image);
                 $(".project-entry:last").append(formattedProjectImage);
-            })
+            });
         });
     }
 };
@@ -112,8 +114,8 @@ var education = {
         dates: '2016',
         url: 'http://udacity.com'
     }],
-    display: function () {
-        education.schools.forEach(function (school) {
+    display: function() {
+        education.schools.forEach(function(school) {
             $("#education").append(HTMLschoolStart);
             var formattedHTMLschoolName = HTMLschoolName.replace("%data%", school.name);
             var formattedHTMLschoolDegree = HTMLschoolDegree.replace("%data%", school.degree);
@@ -122,17 +124,17 @@ var education = {
             $(".education-entry:last").append(formattedHTMLschoolName + formattedHTMLschoolDegree);
             $(".education-entry:last").append(formattedHTMLschoolDates);
             $(".education-entry:last").append(formattedHTMLschoolLocation);
-            school.majors.forEach(function (major) {
+            school.majors.forEach(function(major) {
                 var formattedHTMLschoolMajor = HTMLschoolMajor.replace("%data%", major);
                 $(".education-entry:last").append(formattedHTMLschoolMajor);
-            })
+            });
 
         });
         $("#education").append(HTMLonlineClasses);
 
         $("#education").append(HTMLschoolStart);
 
-        education.onlineSchools.forEach(function (school) {
+        education.onlineSchools.forEach(function(school) {
             var formattedHTMLonlineTitle = HTMLonlineTitle.replace("%data%", school.title);
             var formattedHTMLonlineSchool = HTMLonlineSchool.replace("%data%", school.school);
             var formattedHTMLonlineDates = HTMLonlineDates.replace("%data%", school.dates);
@@ -145,17 +147,23 @@ var education = {
 };
 
 function appendSkills(ele) {
-    for (skill in bio.skills) {
-        var formattedSkill = HTMLskills.replace("%data%", bio.skills[skill]);
-        ele.append(formattedSkill);
+    for (var skill in bio.skills) {
+        if (bio.skills.hasOwnProperty(skill)) {
+            var formattedSkill = HTMLskills.replace("%data%", bio.skills[skill]);
+            ele.append(formattedSkill);
+        }
+
     }
 }
 
 function appendContacts(ele) {
-    for (contact in bio.contacts) {
-        var formattedContact = HTMLcontactGeneric.replace("%contact%", contact);
-        formattedContact = formattedContact.replace("%data%", bio.contacts[contact]);
-        ele.append(formattedContact);
+    for (var contact in bio.contacts) {
+        if (bio.contacts.hasOwnProperty(contact)) {
+            var formattedContact = HTMLcontactGeneric.replace("%contact%", contact);
+            formattedContact = formattedContact.replace("%data%", bio.contacts[contact]);
+            ele.append(formattedContact);
+        }
+
     }
 }
 
@@ -166,7 +174,7 @@ function inName(name) {
 }
 
 function putOnResume() {
-    $("#main").append(internationalizeButton);
+    $("#main").prepend(internationalizeButton);
     $("#mapDiv").append(googleMap);
     bio.display();
     work.display();
