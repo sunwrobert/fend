@@ -52,23 +52,20 @@ var work = {
         description: "Created extensive unit tests using PHPUnit and pushed corresponding bug fixes to improve code coverage. Increased security of the app to SQL injection through the use of PDOs and named placeholders. Developed an internal web application in HTML, CSS, and Javascript to add clients to Woblet’s database."
     }],
     display: function() {
-        for (var job in work.jobs) {
-            if (work.jobs.hasOwnProperty(job)) {
-                $("#workExperience").append(HTMLworkStart);
-
-                var formattedEmployer = HTMLworkEmployer.replace("%data%", work.jobs[job].employer);
-                var formattedTitle = HTMLworkTitle.replace("%data%", work.jobs[job].title);
+        work.jobs.forEach(function(job){
+            $("#workExperience").append(HTMLworkStart);
+                var formattedEmployer = HTMLworkEmployer.replace("%data%", job.employer);
+                var formattedTitle = HTMLworkTitle.replace("%data%", job.title);
                 var formattedEmployerTitle = formattedEmployer + formattedTitle;
+                var formattedEmployerLocation = HTMLworkLocation.replace("%data%", job.location)
+                var formattedDates = HTMLworkDates.replace("%data%", job.dates);
+                var formattedDescription = HTMLworkDescription.replace("%data%", job.description);
+                
                 $(".work-entry:last").append(formattedEmployerTitle);
-
-                var formattedDates = HTMLworkDates.replace("%data%", work.jobs[job].dates);
+                $(".work-entry:last").append(formattedEmployerLocation);
                 $(".work-entry:last").append(formattedDates);
-
-                var formattedDescription = HTMLworkDescription.replace("%data%", work.jobs[job].description);
                 $(".work-entry:last").append(formattedDescription);
-            }
-
-        }
+        })
     }
 };
 
@@ -83,7 +80,7 @@ var projects = {
         projects.projects.forEach(function(project) {
             $("#projects").append(HTMLprojectStart);
             var formattedProjectTitle = HTMLprojectTitle.replace("%data%", project.title);
-            var formattedProjectDate = HTMLprojectDates.replace("%data%", project.date);
+            var formattedProjectDate = HTMLprojectDates.replace("%data%", project.dates);
             var formattedProjectDescription = HTMLprojectDescription.replace("%data%", project.description);
             $(".project-entry:last").append(formattedProjectTitle);
             $(".project-entry:last").append(formattedProjectDate);
@@ -121,9 +118,11 @@ var education = {
             var formattedHTMLschoolDegree = HTMLschoolDegree.replace("%data%", school.degree);
             var formattedHTMLschoolDates = HTMLschoolDates.replace("%data%", school.dates);
             var formattedHTMLschoolLocation = HTMLschoolLocation.replace("%data%", school.location);
+            var formattedHTMLschoolURL = HTMLschoolURL.replace("%data%", school.url);
             $(".education-entry:last").append(formattedHTMLschoolName + formattedHTMLschoolDegree);
             $(".education-entry:last").append(formattedHTMLschoolDates);
             $(".education-entry:last").append(formattedHTMLschoolLocation);
+            $(".education-entry:last").append(formattedHTMLschoolURL);
             school.majors.forEach(function(major) {
                 var formattedHTMLschoolMajor = HTMLschoolMajor.replace("%data%", major);
                 $(".education-entry:last").append(formattedHTMLschoolMajor);
@@ -147,13 +146,10 @@ var education = {
 };
 
 function appendSkills(ele) {
-    for (var skill in bio.skills) {
-        if (bio.skills.hasOwnProperty(skill)) {
-            var formattedSkill = HTMLskills.replace("%data%", bio.skills[skill]);
-            ele.append(formattedSkill);
-        }
-
-    }
+    bio.skills.forEach(function(skill) {
+        var formattedSkill = HTMLskills.replace("%data%", skill);
+        ele.append(formattedSkill);
+    });
 }
 
 function appendContacts(ele) {
