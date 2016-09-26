@@ -13,7 +13,7 @@ var bio = {
         'Java', 'HTML', 'CSS', 'Git', 'Python'
     ],
     biopic: 'images/fry.jpg',
-    display: function() {
+    display: function () {
         var formattedHeaderName = HTMLheaderName.replace("%data%", bio.name);
         var formattedHeaderRole = HTMLheaderRole.replace("%data%", bio.role);
         var formattedWelcomeMsg = HTMLwelcomeMsg.replace("%data%", bio.welcomeMessage);
@@ -51,21 +51,21 @@ var work = {
         dates: 'June 2014 - July 2014',
         description: "Created extensive unit tests using PHPUnit and pushed corresponding bug fixes to improve code coverage. Increased security of the app to SQL injection through the use of PDOs and named placeholders. Developed an internal web application in HTML, CSS, and Javascript to add clients to Woblet’s database."
     }],
-    display: function() {
-        work.jobs.forEach(function(job){
+    display: function () {
+        work.jobs.forEach(function (job) {
             $("#workExperience").append(HTMLworkStart);
-                var formattedEmployer = HTMLworkEmployer.replace("%data%", job.employer);
-                var formattedTitle = HTMLworkTitle.replace("%data%", job.title);
-                var formattedEmployerTitle = formattedEmployer + formattedTitle;
-                var formattedEmployerLocation = HTMLworkLocation.replace("%data%", job.location)
-                var formattedDates = HTMLworkDates.replace("%data%", job.dates);
-                var formattedDescription = HTMLworkDescription.replace("%data%", job.description);
-                
-                $(".work-entry:last").append(formattedEmployerTitle);
-                $(".work-entry:last").append(formattedEmployerLocation);
-                $(".work-entry:last").append(formattedDates);
-                $(".work-entry:last").append(formattedDescription);
-        })
+            var formattedEmployer = HTMLworkEmployer.replace("%data%", job.employer);
+            var formattedTitle = HTMLworkTitle.replace("%data%", job.title);
+            var formattedEmployerTitle = formattedEmployer + formattedTitle;
+            var formattedEmployerLocation = HTMLworkLocation.replace("%data%", job.location);
+            var formattedDates = HTMLworkDates.replace("%data%", job.dates);
+            var formattedDescription = HTMLworkDescription.replace("%data%", job.description);
+
+            $(".work-entry:last").append(formattedEmployerTitle);
+            $(".work-entry:last").append(formattedEmployerLocation);
+            $(".work-entry:last").append(formattedDates);
+            $(".work-entry:last").append(formattedDescription);
+        });
     }
 };
 
@@ -76,8 +76,8 @@ var projects = {
         images: ['http://placehold.it/350x150'],
         description: "Designed and implemented a web application in which a user could register an account, check out books, request extensions on books, check-out books, and other librarial functions. Developed backend through Python (Flask) and frontend through HTML, CSS (Bootstrap), and JavaScript. System was backed with a relational DBMS that supports SQL.",
     }],
-    display: function() {
-        projects.projects.forEach(function(project) {
+    display: function () {
+        projects.projects.forEach(function (project) {
             $("#projects").append(HTMLprojectStart);
             var formattedProjectTitle = HTMLprojectTitle.replace("%data%", project.title);
             var formattedProjectDate = HTMLprojectDates.replace("%data%", project.dates);
@@ -85,7 +85,7 @@ var projects = {
             $(".project-entry:last").append(formattedProjectTitle);
             $(".project-entry:last").append(formattedProjectDate);
             $(".project-entry:last").append(formattedProjectDescription);
-            project.images.forEach(function(image) {
+            project.images.forEach(function (image) {
                 var formattedProjectImage = HTMLprojectImage.replace("%data%", image);
                 $(".project-entry:last").append(formattedProjectImage);
             });
@@ -111,19 +111,18 @@ var education = {
         dates: '2016',
         url: 'http://udacity.com'
     }],
-    display: function() {
-        education.schools.forEach(function(school) {
+    display: function () {
+        education.schools.forEach(function (school) {
             $("#education").append(HTMLschoolStart);
-            var formattedHTMLschoolName = HTMLschoolName.replace("%data%", school.name);
+            var formattedHTMLschoolURL = HTMLschoolName.replace("#", school.url);
+            var formattedHTMLschoolName = formattedHTMLschoolURL.replace("%data%", school.name);
             var formattedHTMLschoolDegree = HTMLschoolDegree.replace("%data%", school.degree);
             var formattedHTMLschoolDates = HTMLschoolDates.replace("%data%", school.dates);
             var formattedHTMLschoolLocation = HTMLschoolLocation.replace("%data%", school.location);
-            var formattedHTMLschoolURL = HTMLschoolURL.replace("%data%", school.url);
             $(".education-entry:last").append(formattedHTMLschoolName + formattedHTMLschoolDegree);
             $(".education-entry:last").append(formattedHTMLschoolDates);
             $(".education-entry:last").append(formattedHTMLschoolLocation);
-            $(".education-entry:last").append(formattedHTMLschoolURL);
-            school.majors.forEach(function(major) {
+            school.majors.forEach(function (major) {
                 var formattedHTMLschoolMajor = HTMLschoolMajor.replace("%data%", major);
                 $(".education-entry:last").append(formattedHTMLschoolMajor);
             });
@@ -131,13 +130,14 @@ var education = {
         });
         $("#education").append(HTMLonlineClasses);
 
-        $("#education").append(HTMLschoolStart);
+        education.onlineSchools.forEach(function (school) {
+            $("#education").append(HTMLschoolStart);
 
-        education.onlineSchools.forEach(function(school) {
             var formattedHTMLonlineTitle = HTMLonlineTitle.replace("%data%", school.title);
             var formattedHTMLonlineSchool = HTMLonlineSchool.replace("%data%", school.school);
             var formattedHTMLonlineDates = HTMLonlineDates.replace("%data%", school.dates);
-            var formattedHTMLonlineURL = HTMLonlineURL.replace("%data%", school.url);
+            var formattedHTMLonlineURL = HTMLonlineURL.replace("%data%", school.url).replace("#", school.url);
+
             $(".education-entry:last").append(formattedHTMLonlineTitle + formattedHTMLonlineSchool);
             $(".education-entry:last").append(formattedHTMLonlineDates);
             $(".education-entry:last").append(formattedHTMLonlineURL);
@@ -146,7 +146,7 @@ var education = {
 };
 
 function appendSkills(ele) {
-    bio.skills.forEach(function(skill) {
+    bio.skills.forEach(function (skill) {
         var formattedSkill = HTMLskills.replace("%data%", skill);
         ele.append(formattedSkill);
     });
