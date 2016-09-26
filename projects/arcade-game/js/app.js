@@ -21,6 +21,7 @@ var Enemy = function () {
     this.reset = function () {
         this.x = -Math.floor(Math.random() * xIncrement * 10) - xIncrement;
         this.y = Math.floor((Math.random() * 3) + 1) * yIncrement - yOffset;
+        // Randomize speed to be 100 and 500
         this.speed = Math.floor(Math.random() * 400) + 100;
     };
 
