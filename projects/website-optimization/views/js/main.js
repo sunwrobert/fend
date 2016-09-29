@@ -469,9 +469,10 @@ var resizePizzas = function(size) {
 
 window.performance.mark("mark_start_generating"); // collect timing data
 
+var pizzasDiv = document.getElementById("randomPizzas");
+
 // This for-loop actually creates and appends all of the pizzas when the page loads
 for (var i = 2; i < 100; i++) {
-  var pizzasDiv = document.getElementById("randomPizzas");
   pizzasDiv.appendChild(pizzaElementGenerator(i));
 }
 
@@ -507,15 +508,15 @@ function updatePositions() {
   window.performance.mark("mark_start_frame");
 
   var scrollTop = (document.body.scrollTop / 1250);
-  var phaseIndex = 0;
-  // Store same 5 values so don't recalculate every time
-  var phaseList = [100*Math.sin(scrollTop), 100*Math.sin(scrollTop+1), 100*Math.sin(scrollTop+2), 100*Math.sin(scrollTop+3), 100*Math.sin(scrollTop+4)];
+  var phaseList = [];
+  for (var j= 0 ; j < 5; j++){
+    phaseList.push(Math.sin(scrollTop + j));
+  }
+
   for (var i = 0; i < items.length; i++) {
-    var phase = phaseList[phaseIndex];
-    phaseIndex = phaseIndex > 4 ? 0 : phaseIndex;
-    //console.log(items[i].style.left, items[i].basicLeft + phase + 'px');
-    items[i].style.left = items[i].basicLeft + phase + 'px';
-  };
+    // var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
+    items[i].style.left = items[i].basicLeft + 100* phaseList[i%5] + 'px';
+  }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
   // Super easy to create custom metrics.
@@ -534,8 +535,9 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
   var cols = 8;
   var s = 256;
+  var numPizzas = window.innerHeight / s*cols;
   var movingPizzas = document.getElementById("movingPizzas1");
-  for (var i = 0; i < 35; i++) {
+  for (var i = 0; i < numPizzas; i++) {
     var elem = document.createElement('img');
     elem.className = 'mover';
     elem.src = "images/pizza.png";
