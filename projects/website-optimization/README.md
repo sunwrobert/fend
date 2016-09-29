@@ -8,6 +8,16 @@
 
 ## Optimizations Made
 
+### Images
+
+Optimized all local images by resizing and compressing them.
+
+### HTML (index.html)
+
+1. Minimized HTML
+2. Made references to scripts `async`
+3. Minimized styles and JavaScript and put on bottom of body
+
 ### HTML (pizza.html)
 
 1. Minimized HTML.
