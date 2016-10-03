@@ -20,15 +20,22 @@
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <section id="list-view">
+        <h1 class="title">Cool places to check out in Atlanta</h1>
         <span id="menu-close" class="close-list-btn">&#10006;</span>
+        <input class="location-filter" data-bind="textInput: filter" type="text" placeholder="Filter places here">
+        <ul class="list-view--location-list" data-bind="foreach: filteredLocations">
+            <li data-bind="text: title"></li>
+        </ul>
     </section>
+
     <main id="map">
     </main>
+
     <span id="menu">&#9776;</span>
 
     <script src="js/knockout-3.4.0.js"></script>
     <script src="js/app.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK7vsLZJHmWB-voEWRL9UA9sICqzuEOXQ&callback=initMap" async
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK7vsLZJHmWB-voEWRL9UA9sICqzuEOXQ&callback=init" async
         defer></script>
 
 </body>
