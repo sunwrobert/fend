@@ -12,6 +12,7 @@
     <title>Places to go in Atlanta!</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab" rel="stylesheet">
     <link rel="stylesheet" href="css/custom.css">
 </head>
 
@@ -20,13 +21,17 @@
         <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
     <section id="list-view">
-        <h1 class="title">Cool places to check out in Atlanta</h1>
+        <p class="title">Cool places to check out in Atlanta</p>
+        <p style="text-align:center">Data gathered from Foursquare API and Google Maps API.</p>
         <span id="menu-close" class="close-list-btn">&#10006;</span>
-        <input class="location-filter" data-bind="textInput: filter, event : {keyup: filterMarkers}" type="text" placeholder="Filter places here">
+        <input class="location-filter" data-bind="textInput: filter" type="text" placeholder="Filter places here">
         <ul class="list-view--location-list" data-bind="foreach: filteredLocations">
-            <li data-bind="text: title, event: {click: $parent.clickLocation(this)}"></li>
+            <div class="list-view--location-list--item" data-bind="event: {click: $parent.clickLocation(this)}">
+                <li class="list-view--location-list--item-name" data-bind="text: title"></li>
+                <li class="list-view--location-list--item-address" data-bind="text: address"></li>                
+            </div>
         </ul>
-        <p data-bind="if: noMatchesFound">No matches found</p>
+        <p class="no-results" data-bind="if: noMatchesFound">No matches found</p>
     </section>
 
     <main id="map">
@@ -34,11 +39,12 @@
 
     <span id="menu">&#9776;</span>
 
+    <script src="js/jquery-3.1.1.min.js"></script>
+    <script src="js/jquery.ba-bbq-min.js"></script>
     <script src="js/knockout-3.4.0.js"></script>
     <script src="js/app.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBK7vsLZJHmWB-voEWRL9UA9sICqzuEOXQ&callback=init" async
         defer></script>
-
 </body>
 
 </html>

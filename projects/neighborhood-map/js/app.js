@@ -1,59 +1,72 @@
-var locations = [{
-    title: "The Varsity",
-    position: {
-        lat: 33.771510,
-        lng: -84.389311
-    }
-}, {
-    title: "Georgia Aquarium",
-    position: {
-        lat: 33.763424,
-        lng: -84.394891
-    }
-}, {
-    title: "Taco Mac",
-    position: {
-        lat: 33.780643,
-        lng: -84.383911
-    }
-}, {
-    title: "Antico's Pizza",
-    position: {
-        lat: 33.784651,
-        lng: -84.405589
-    }
-}, {
-    title: "Five Guys Burger and Fries",
-    position: {
-        lat: 33.778194,
-        lng: -84.385114
-    }
-}, {
-    title: "Georgia Tech Campus Recreation Center",
-    position: {
-        lat: 33.775525,
-        lng: -84.403912
-    }
-}, ];
-
+var atlantaLat = 33.7490;
+var atlantaLng = -84.3880;
 var config = {
-    apiKey: 'XXXXXXXXXXXXXX',
+    apiKey: 'VWGK3UUZFWBGUZ45JLO2GK4JL4WP4XTL4L2HVU41DKUP5L3G',
     authUrl: 'https://foursquare.com/',
     apiUrl: 'https://api.foursquare.com/'
-  };
+};
 
-function init() {
-    initEventListeners();
-    initMap();
+/* Attempt to retrieve access token from URL. */
+function doAuthRedirect() {
+    var redirect = window.location.href.replace(window.location.hash, '');
+    var url = config.authUrl + 'oauth2/authenticate?response_type=token&client_id=' + config.apiKey +
+        '&redirect_uri=' + encodeURIComponent(redirect) +
+        '&state=' + encodeURIComponent($.bbq.getState('req') || 'users/self');
+    window.location.href = url;
 }
 
-var map;
-var markers;
-var latlngbounds;
+if ($.bbq.getState('access_token')) {
+    // If there is a token in the state, consume it
+    var token = $.bbq.getState('access_token');
+    $.bbq.pushState({}, 2);
+} else if ($.bbq.getState('error')) {} else {
+    doAuthRedirect();
+}
 
-function initMap() {
-    latlngbounds = new google.maps.LatLngBounds();
-    map = new google.maps.Map(document.getElementById('map'), {
+function init() {
+    initMenu();
+    loadData();
+}
+
+function loadData() {
+    // Query foursquare API for venue recommendations near the current location. Initialize the map after the data is loaded
+    $.getJSON(config.apiUrl + 'v2/venues/explore?ll=' + atlantaLat + ',' + atlantaLng + '&oauth_token=' + window.token + '&v=20140601', {}, function (data) {
+        var locations = [];
+        var venues = data.response.groups[0].items;
+        console.log(venues);
+        for (var i = 0; i < venues.length; i++) {
+            var venue = venues[i].venue;
+            var name = venue.name;
+            var url = venue.url;
+            var rating = venue.rating;
+            var address = venue.location.address;
+            var city = venue.location.city;
+            var state = venue.location.state;
+            var position = {
+                lat: venue.location.lat,
+                lng: venue.location.lng
+            };
+            locations.push({
+                title: name,
+                url: url,
+                rating: rating,
+                address: address,
+                city: city,
+                state: state,
+                position: position
+            });
+        }
+        initMap(locations);
+    })
+    .fail(function(){
+        document.getElementById('map').innerHTML = "Failed to load location data. Please try again later.";
+    });
+}
+
+
+function initMap(locations) {
+    var latlngbounds = new google.maps.LatLngBounds();
+    var map = new google.maps.Map(document.getElementById('map'), {
         center: {
             lat: 33.7490,
             lng: -84.3880
@@ -61,11 +74,43 @@ function initMap() {
         zoom: 8,
         mapTypeControl: false
     });
-
-
-    addMarkers();
-
+    addMarkers(locations, map, latlngbounds);
     map.fitBounds(latlngbounds);
+
+    // Instantiate our view model only after we've already initialized the map and loaded in all of our data
+    var ViewModel = function () {
+        var self = this;
+
+        // Sort all the locations in alphabetical order
+        this.locations = ko.observableArray(locations).sort(function (left, right) {
+            return left.title == right.title ? 0 : left.title < right.title ? -1 : 1;
+        });
+
+        this.filter = ko.observable("");
+
+        this.filteredLocations = ko.computed(function () {
+            return ko.utils.arrayFilter(self.locations(), function (location) {
+                var contains = location.title.toUpperCase().includes(self.filter().toUpperCase());
+                if (contains) {
+                    location.marker.setMap(map);
+                } else {
+                    location.marker.setMap(null);
+                }
+                return contains;
+            });
+        });
+
+        this.noMatchesFound = ko.computed(function () {
+            return self.filteredLocations().length === 0;
+        });
+
+        this.clickLocation = function (location) {
+            return function (location) {
+                clickLocation(location)();
+            };
+        };
+    };
+    ko.applyBindings(new ViewModel());
 }
 
 function clickLocation(location) {
@@ -82,15 +127,25 @@ function clickLocation(location) {
 
 }
 
-function addMarkers() {
+function addMarkers(locations, map, latlngbounds) {
+    
     locations.forEach(function (location) {
-        var contentString = '<h1>' + location.title + '</h1>'
+
+        // Dynamically set the information window for each marker through the locations values.
+
+        var contentString = '<h1>' + location.title + '</h1>' +
+            '<h2>' + location.address + ' ' + location.city + ', ' + location.state + '</h2>' +
+            '<h3><a href="' + location.url + '">Website</a></h3>' +
+            '<h3>Rating: ' + location.rating + '</h3>';
         var infoWindow = new google.maps.InfoWindow({
             content: contentString
         });
 
+        // This method adds the markers lat and longitude positions to be within the bounds of the Map.
+
         latlngbounds.extend(location.position);
-        marker = new google.maps.Marker({
+        
+        var marker = new google.maps.Marker({
             map: map,
             draggable: false,
             animation: google.maps.Animation.DROP,
@@ -102,24 +157,27 @@ function addMarkers() {
         location.infoWindow = infoWindow;
 
         // Stop the marker from animating if the info window button is closed.
-        google.maps.event.addListener(location.infoWindow, 'closeclick', function(){
-            if(location.marker.getAnimation() !== null){
+        google.maps.event.addListener(location.infoWindow, 'closeclick', function () {
+            if (location.marker.getAnimation() !== null) {
                 location.marker.setAnimation(null);
             }
-        })
+        });
 
-        location.marker.addListener('click', clickLocation(location));
+        location.marker.addListener('mousedown', clickLocation(location));
     });
 }
 
-function initEventListeners() {
+/*
+Set all the menu listeners needed to get the side menu to open and close on different viewports
+*/
+function initMenu() {
     var menuButton = document.getElementById('menu');
     var menuCloseButton = document.getElementById('menu-close');
     var sideNav = document.getElementById('list-view');
-    menuCloseButton.addEventListener('click', function () {
+    menuCloseButton.addEventListener('mousedown', function () {
         toggleOpen(sideNav);
     });
-    menuButton.addEventListener('click', function () {
+    menuButton.addEventListener('mousedown', function () {
         toggleOpen(sideNav);
     });
 }
@@ -127,38 +185,3 @@ function initEventListeners() {
 function toggleOpen(ele) {
     ele.classList.toggle('open');
 }
-
-
-var ViewModel = function () {
-    var self = this;
-    this.locations = ko.observableArray(locations);
-    this.filter = ko.observable("");
-    this.filteredLocations = ko.computed(function () {
-        return ko.utils.arrayFilter(self.locations(), function (location) {
-            return location.title.toUpperCase().includes(self.filter().toUpperCase());
-        });
-    });
-    this.noMatchesFound = ko.computed(function () {
-        return self.filteredLocations().length == 0;
-    });
-    this.clickLocation = function (location) {
-        return function (location) {
-            clickLocation(location)();
-        };
-    };
-
-    // Duplicated code because filtered locations wouldn't include the markers in each location.
-    this.filterMarkers = function(){
-        this.locations().forEach(function(location){
-            if(location.title.toUpperCase().includes(self.filter().toUpperCase())){
-                location.marker.setMap(map);
-            }
-            else {
-                location.marker.setMap(null);
-            }
-        })
-    }
-};
-
-
-ko.applyBindings(new ViewModel());
