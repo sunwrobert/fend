@@ -22,10 +22,11 @@
     <section id="list-view">
         <h1 class="title">Cool places to check out in Atlanta</h1>
         <span id="menu-close" class="close-list-btn">&#10006;</span>
-        <input class="location-filter" data-bind="textInput: filter" type="text" placeholder="Filter places here">
+        <input class="location-filter" data-bind="textInput: filter, event : {keyup: filterMarkers}" type="text" placeholder="Filter places here">
         <ul class="list-view--location-list" data-bind="foreach: filteredLocations">
-            <li data-bind="text: title"></li>
+            <li data-bind="text: title, event: {click: $parent.clickLocation(this)}"></li>
         </ul>
+        <p data-bind="if: noMatchesFound">No matches found</p>
     </section>
 
     <main id="map">
