@@ -33,7 +33,6 @@ function loadData() {
     $.getJSON(config.apiUrl + 'v2/venues/explore?ll=' + atlantaLat + ',' + atlantaLng + '&oauth_token=' + window.token + '&v=20140601', {}, function (data) {
         var locations = [];
         var venues = data.response.groups[0].items;
-        console.log(venues);
         for (var i = 0; i < venues.length; i++) {
             var venue = venues[i].venue;
             var name = venue.name;
