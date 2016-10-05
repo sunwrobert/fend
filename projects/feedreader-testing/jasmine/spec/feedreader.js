@@ -26,22 +26,12 @@ $(function () {
             expect(allFeeds.length).not.toBe(0);
         });
 
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
-         */
         it('have valid URLS', function () {
             allFeeds.forEach(function (feed) {
                 expect(feed.url).toBeDefined();
                 expect(feed.url.length).not.toBe(0);
             });
         });
-
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
 
         it('have valid names', function () {
             allFeeds.forEach(function (feed) {
@@ -51,28 +41,17 @@ $(function () {
         })
     });
 
-    /* TODO: Write a new test suite named "The menu" */
     describe('The menu', function () {
+        var body;
+        beforeAll(function () {
+            body = document.getElementsByTagName("body")[0];
+        });
 
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
         it('should have the menu hidden by default', function () {
-            var body = document.getElementsByTagName("body")[0];
             expect(body.classList.contains('menu-hidden')).toBe(true);
         });
 
-        /* TODO: Write a test that ensures the menu changes
-         * visibility when the menu icon is clicked. This test
-         * should have two expectations: does the menu display when
-         * clicked and does it hide when clicked again.
-         */
-
-
         it('should hide/show menu when menu icon is clicked', function () {
-            var body = document.getElementsByTagName("body")[0];
             var beforeClick = body.classList.contains('menu-hidden');
             var menuIcon = document.getElementsByClassName('menu-icon-link')[0];
             // Simulate click event
@@ -84,19 +63,13 @@ $(function () {
         });
     });
 
-    /* TODO: Write a new test suite named "Initial Entries" */
 
     describe('Initial Entries', function () {
         beforeEach(function (done) {
             loadFeed(0, done);
         });
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
-        it('should have a .entry element within the .feed container', function (done) {
+
+        it('should have a .entry element within the .feed container', function () {
             var container = document.getElementsByClassName('feed')[0];
             var entries = document.getElementsByClassName('entry');
             var containsEntryClass = false;
@@ -107,32 +80,39 @@ $(function () {
                 }
             }
             expect(containsEntryClass).toBe(true);
-            done();
         });
     });
 
-
-
-    /* TODO: Write a new test suite named "New Feed Selection"*/
-
     describe('New Feed Selection', function () {
-        beforeEach(function (done) {
-            loadFeed(0, done);
-        });
 
+        var before;
+        var after;
+        beforeEach(function (done) {
+            loadFeed(0, function () {
+                before = $('.entry').clone();
+                loadFeed(1, function () {
+                    after = $('.entry').clone();
+                    done();
+                })
+            });
+        });
 
         /* TODO: Write a test that ensures when a new feed is loaded
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
-        it('should change content when loaded', function (done) {
+        it('should change content when loaded', function () {
+            console.log(before, after);
             // See if the article entries differ after loading a new feed
-            var feedEntries = $('.entry').clone();
-            loadFeed(1, function (feedEntries) {
-                var feedEntriesAfter = $('.entry').clone();
-                expect(feedEntries).not.toBe(feedEntriesAfter);
-                done();
-            }(feedEntries));
+            var equal = true;
+            for (var i = 0; i < before.length; i++) {
+                console.log(before[i].innerText, after[i].innerText);
+                if (before[i].innerText !== after[i].innerText) {
+                    equal = false;
+                    break;
+                }
+            }
+            expect(equal).toBe(false);
         });
     });
 
