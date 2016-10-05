@@ -3,25 +3,9 @@ var atlantaLng = -84.3880;
 var config = {
     apiKey: 'VWGK3UUZFWBGUZ45JLO2GK4JL4WP4XTL4L2HVU41DKUP5L3G',
     authUrl: 'https://foursquare.com/',
-    apiUrl: 'https://api.foursquare.com/'
+    apiUrl: 'https://api.foursquare.com/',
+    clientSecret: 'C52E5KAHGQJAGSVTBRWAZJWBS2WOEO0EN1DAOXTDLIGWZWUV',
 };
-
-/* Attempt to retrieve access token from URL. */
-function doAuthRedirect() {
-    var redirect = window.location.href.replace(window.location.hash, '');
-    var url = config.authUrl + 'oauth2/authenticate?response_type=token&client_id=' + config.apiKey +
-        '&redirect_uri=' + encodeURIComponent(redirect) +
-        '&state=' + encodeURIComponent($.bbq.getState('req') || 'users/self');
-    window.location.href = url;
-}
-
-if ($.bbq.getState('access_token')) {
-    // If there is a token in the state, consume it
-    var token = $.bbq.getState('access_token');
-    $.bbq.pushState({}, 2);
-} else if ($.bbq.getState('error')) {} else {
-    doAuthRedirect();
-}
 
 function init() {
     initMenu();
@@ -30,7 +14,7 @@ function init() {
 
 function loadData() {
     // Query foursquare API for venue recommendations near the current location. Initialize the map after the data is loaded
-    $.getJSON(config.apiUrl + 'v2/venues/explore?ll=' + atlantaLat + ',' + atlantaLng + '&oauth_token=' + window.token + '&v=20140601', {}, function (data) {
+    $.getJSON(config.apiUrl + 'v2/venues/explore?ll=' + atlantaLat + ',' + atlantaLng + '&client_id=' + config.apiKey + '&client_secret=' + config.clientSecret + '&v=20140601', {}, function (data) {
         var locations = [];
         var venues = data.response.groups[0].items;
         for (var i = 0; i < venues.length; i++) {
