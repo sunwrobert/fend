@@ -81,29 +81,30 @@ function initMap(locations) {
         var self = this;
 
         // Sort all the locations in alphabetical order
-        this.locations = ko.observableArray(locations).sort(function (left, right) {
+        self.locations = ko.observableArray(locations).sort(function (left, right) {
             return left.title == right.title ? 0 : left.title < right.title ? -1 : 1;
         });
 
-        this.filter = ko.observable("");
+        self.filter = ko.observable("");
 
-        this.filteredLocations = ko.computed(function () {
+        self.filteredLocations = ko.computed(function () {
             return ko.utils.arrayFilter(self.locations(), function (location) {
                 var contains = location.title.toUpperCase().includes(self.filter().toUpperCase());
-                if (contains) {
-                    location.marker.setMap(map);
-                } else {
-                    location.marker.setMap(null);
-                }
+                location.marker.setVisible(contains);
+                // if (contains) {
+                //     location.marker.setMap(map);
+                // } else {
+                //     location.marker.setMap(null);
+                // }
                 return contains;
             });
         });
 
-        this.noMatchesFound = ko.computed(function () {
+        self.noMatchesFound = ko.computed(function () {
             return self.filteredLocations().length === 0;
         });
 
-        this.clickLocation = function (location) {
+        self.clickLocation = function (location) {
             return function (location) {
                 clickLocation(location)();
             };
@@ -132,9 +133,12 @@ function addMarkers(locations, map, latlngbounds) {
 
         // Dynamically set the information window for each marker through the locations values.
 
+        var url = location.url ? location.url : "";
+        var href = location.url ? 'href="' + location.url + '"' : "";
+        var urlDisplay = url === "" ? "No website" : "Website";
         var contentString = '<h1>' + location.title + '</h1>' +
             '<h2>' + location.address + ' ' + location.city + ', ' + location.state + '</h2>' +
-            '<h3><a href="' + location.url + '">Website</a></h3>' +
+            '<h3><a target="blank"' + href + '>' + urlDisplay + '</a></h3>' +
             '<h3>Rating: ' + location.rating + '</h3>';
         var infoWindow = new google.maps.InfoWindow({
             content: contentString
@@ -183,4 +187,8 @@ function initMenu() {
 
 function toggleOpen(ele) {
     ele.classList.toggle('open');
+}
+
+function googleMapsError(){
+    document.getElementById('map').innerHTML = "Failed to load Google Maps. Please try again later.";
 }
